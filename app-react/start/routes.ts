@@ -29,3 +29,6 @@ router
     router.post('logout', [controllers.Session, 'destroy'])
   })
   .use(middleware.auth())
+
+
+router.resource('rooms', controllers.Rooms)

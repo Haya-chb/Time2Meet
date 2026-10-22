@@ -48,6 +48,48 @@ const routes = {
     tokens: [[0,"logout"]],
     types: placeholder as Registry['session.destroy']['types'],
   },
+  'rooms.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/rooms',
+    tokens: [[0,"rooms"]],
+    types: placeholder as Registry['rooms.index']['types'],
+  },
+  'rooms.create': {
+    methods: ["GET","HEAD"],
+    pattern: '/rooms/create',
+    tokens: [[0,"rooms"],[0,"create"]],
+    types: placeholder as Registry['rooms.create']['types'],
+  },
+  'rooms.store': {
+    methods: ["POST"],
+    pattern: '/rooms',
+    tokens: [[0,"rooms"]],
+    types: placeholder as Registry['rooms.store']['types'],
+  },
+  'rooms.show': {
+    methods: ["GET","HEAD"],
+    pattern: '/rooms/:id',
+    tokens: [[0,"rooms"],[1,"id"]],
+    types: placeholder as Registry['rooms.show']['types'],
+  },
+  'rooms.edit': {
+    methods: ["GET","HEAD"],
+    pattern: '/rooms/:id/edit',
+    tokens: [[0,"rooms"],[1,"id"],[0,"edit"]],
+    types: placeholder as Registry['rooms.edit']['types'],
+  },
+  'rooms.update': {
+    methods: ["PUT","PATCH"],
+    pattern: '/rooms/:id',
+    tokens: [[0,"rooms"],[1,"id"]],
+    types: placeholder as Registry['rooms.update']['types'],
+  },
+  'rooms.destroy': {
+    methods: ["DELETE"],
+    pattern: '/rooms/:id',
+    tokens: [[0,"rooms"],[1,"id"]],
+    types: placeholder as Registry['rooms.destroy']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

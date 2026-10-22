@@ -13,4 +13,13 @@ export interface ApiDefinition {
     destroy: typeof routes['session.destroy']
   }
   dashboard: typeof routes['dashboard']
+  rooms: {
+    index: typeof routes['rooms.index']
+    create: typeof routes['rooms.create']
+    store: typeof routes['rooms.store']
+    show: typeof routes['rooms.show']
+    edit: typeof routes['rooms.edit']
+    update: typeof routes['rooms.update']
+    destroy: typeof routes['rooms.destroy']
+  }
 }
