@@ -25,7 +25,6 @@ export interface ApiDefinition {
   }
   polls: {
     store: typeof routes['polls.store']
-    show: typeof routes['polls.show']
     vote: typeof routes['polls.vote']
   }
 }

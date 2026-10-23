@@ -1,4 +1,5 @@
 
+import { useState } from 'react'
 import Page from '~/components/page'
 import AppLayout from '~/layouts/app'
 import { Form } from '@adonisjs/inertia/react'
@@ -8,14 +9,21 @@ type Choice = {
   proposition: string
   startsAt: string | null
   votesCount: number
+  hasVoted: boolean
 }
+
 
 type Poll = {
   id: number
   question: string
-  type: 'datetime' | 'free'
-  choices: Choice[]
+  choices: {
+    id: number
+    proposition: string
+    votesCount: number
+    hasVoted: boolean
+  }[]
 }
+
 
 type Room = {
   id: number
@@ -30,9 +38,26 @@ export default function RoomShow({
   room: Room
   polls: Poll[]
 }) {
+  const [propositions, setPropositions] = useState(['', ''])
+
+  function updateProposition(index: number, value: string) {
+    setPropositions((current) =>
+      current.map((item, i) => (i === index ? value : item))
+    )
+  }
+
+  function addProposition() {
+    setPropositions((current) => [...current, ''])
+  }
+
+  function removeProposition(index: number) {
+    setPropositions((current) =>
+      current.filter((_, i) => i !== index)
+    )
+  }
+
   return (
     <Page title={room.name}>
-      <h1>{room.name}</h1>
       <p>Code de la salle : {room.code}</p>
 
       <hr />
@@ -54,31 +79,56 @@ export default function RoomShow({
           />
         </div>
 
-        <div>
-          <label htmlFor="choice1">Proposition 1</label>
-          <input
-            id="choice1"
-            name="choices[]"
-            type="text"
-            placeholder="Ex. Vendredi soir"
-            required
-          />
+        {propositions.map((proposition, index) => (
+          <div key={index} style={{ marginTop: '12px' }}>
+            <label htmlFor={`choice-${index}`}>
+              Proposition {index + 1}
+            </label>
+
+            <input
+              id={`choice-${index}`}
+              name="choices[]"
+              type="text"
+              value={proposition}
+              onChange={(event) =>
+                updateProposition(index, event.target.value)
+              }
+              placeholder={
+                index === 0
+                  ? 'Ex. Vendredi soir'
+                  : index === 1
+                    ? 'Ex. Samedi matin'
+                    : 'Autre proposition'
+              }
+              required
+            />
+
+            {propositions.length > 2 && (
+              <button
+                type="button"
+                onClick={() => removeProposition(index)}
+                style={{ marginTop: '6px' }}
+              >
+                Supprimer cette proposition
+              </button>
+            )}
+          </div>
+        ))}
+
+        <div style={{ marginTop: '12px' }}>
+          <button
+            type="button"
+            onClick={addProposition}
+          >
+            + Ajouter une proposition
+          </button>
         </div>
 
-        <div>
-          <label htmlFor="choice2">Proposition 2</label>
-          <input
-            id="choice2"
-            name="choices[]"
-            type="text"
-            placeholder="Ex. Samedi matin"
-            required
-          />
+        <div style={{ marginTop: '16px' }}>
+          <button type="submit" className="btn btn--primary">
+            Créer le sondage
+          </button>
         </div>
-
-        <button type="submit" className="btn btn--primary">
-          Créer le sondage
-        </button>
       </Form>
 
       <hr />
@@ -169,7 +219,9 @@ export default function RoomShow({
                           type="submit"
                           className="btn btn--primary"
                         >
-                          Voter
+                          {choice.hasVoted
+                            ? 'Retirer mon vote'
+                            : 'Voter'}
                         </button>
                       </Form>
                     </div>

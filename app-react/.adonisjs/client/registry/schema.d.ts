@@ -215,19 +215,6 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['store']>>>
     }
   }
-  'polls.show': {
-    methods: ["GET","HEAD"]
-    pattern: '/polls/:id'
-    types: {
-      body: {}
-      paramsTuple: [ParamValue]
-      params: { id: ParamValue }
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['show']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['show']>>>
-      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['show']>>>
-    }
-  }
   'polls.vote': {
     methods: ["POST"]
     pattern: '/polls/:id/vote'

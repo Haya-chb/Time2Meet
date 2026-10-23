@@ -102,12 +102,6 @@ const routes = {
     tokens: [[0,"rooms"],[1,"roomId"],[0,"polls"]],
     types: placeholder as Registry['polls.store']['types'],
   },
-  'polls.show': {
-    methods: ["GET","HEAD"],
-    pattern: '/polls/:id',
-    tokens: [[0,"polls"],[1,"id"]],
-    types: placeholder as Registry['polls.show']['types'],
-  },
   'polls.vote': {
     methods: ["POST"],
     pattern: '/polls/:id/vote',

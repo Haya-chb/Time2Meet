@@ -35,9 +35,6 @@ router
   .post('rooms/:roomId/polls', [controllers.Polls, 'store'])
   .as('polls.store')
 
-router
-  .get('polls/:id', [controllers.Polls, 'show'])
-  .as('polls.show')
 
 router
   .post('polls/:id/vote', [controllers.Polls, 'vote'])

@@ -76,46 +76,7 @@ export default class PollsController {
     })
   }
 
-  /**
-   * Afficher un sondage
-   */
-  async show({ params, auth, inertia, response }: HttpContext) {
-    const poll = await Poll.find(params.id)
 
-    if (!poll) {
-      return response.notFound('Sondage introuvable.')
-    }
-
-    const user = auth.user!
-
-    const membership = await db
-      .from('room_users')
-      .where('room_id', poll.roomId)
-      .where('user_id', user.id)
-      .first()
-
-    if (!membership) {
-      return response.forbidden(
-        'Tu ne fais pas partie de cette salle.'
-      )
-    }
-
-    await poll.load('choices')
-
-    return inertia.render('polls/show', {
-      poll: {
-        id: poll.id,
-        question: poll.question,
-        type: poll.type,
-        roomId: poll.roomId,
-        choices: poll.choices.map((choice) => ({
-          id: choice.id,
-          proposition: choice.proposition,
-          startsAt: choice.startsAt,
-        })),
-      },
-    })
-  }
 
   /**
    * Voter pour une proposition
@@ -163,7 +124,9 @@ export default class PollsController {
       .where('choice_id', choice.id)
       .first()
 
-    if (!existingVote) {
+    if (existingVote) {
+      await existingVote.delete()
+    } else {
       await Vote.create({
         userId: user.id,
         choiceId: choice.id,
@@ -171,5 +134,4 @@ export default class PollsController {
     }
 
     return response.redirect().back()
-  }
-}
+  }}

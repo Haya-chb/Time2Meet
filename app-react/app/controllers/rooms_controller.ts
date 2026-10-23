@@ -5,32 +5,14 @@ import Poll from '#models/poll'
 import Room from '#models/room'
 
 export default class RoomsController {
-  /**
-   * Afficher les salles
-   */
-  async index({ auth, inertia }: HttpContext) {
-    const user = auth.user!
-
-    const rooms = await Room.query()
-      .join('room_users', 'rooms.id', 'room_users.room_id')
-      .where('room_users.user_id', user.id)
-      .select('rooms.*')
-
-    return inertia.render('rooms/index', {
-      rooms: rooms.map((room) => ({
-        id: room.id,
-        name: room.name,
-        code: room.code,
-      })),
-    })
-  }
+  
 
   /**
    * Afficher le formulaire de création
    */
-  async create({ inertia }: HttpContext) {
-    return inertia.render('rooms/create')
-  }
+ async create({ inertia }: HttpContext) {
+  return inertia.render('rooms/create', {})
+}
 
   /**
    * Afficher le dashboard avec les salles de l'utilisateur
@@ -84,7 +66,7 @@ export default class RoomsController {
   }
 
   /**
-   * Afficher une salle et ses sondages avec le nombre de votes
+   * Afficher une salle et ses sondages avec les nombres de votes
    */
   async show({ params, auth, inertia, response }: HttpContext) {
     const room = await Room.find(params.id)
@@ -95,6 +77,7 @@ export default class RoomsController {
 
     const user = auth.user!
 
+    // Vérifier que l'utilisateur appartient à la salle
     const membership = await db
       .from('room_users')
       .where('room_id', room.id)
@@ -105,14 +88,17 @@ export default class RoomsController {
       return response.forbidden('Tu ne fais pas partie de cette salle.')
     }
 
+    // Récupérer les sondages et leurs propositions
     const polls = await Poll.query()
       .where('room_id', room.id)
       .preload('choices')
 
+    // Récupérer les identifiants de toutes les propositions
     const choiceIds = polls.flatMap((poll) =>
       poll.choices.map((choice) => choice.id)
     )
 
+    // Compter les votes pour chaque proposition
     const voteCounts = choiceIds.length
       ? await db
           .from('votes')
@@ -129,21 +115,36 @@ export default class RoomsController {
       ])
     )
 
+    // Récupérer les propositions pour lesquelles cet utilisateur a voté
+    const userVotes = choiceIds.length
+      ? await db
+          .from('votes')
+          .select('choice_id')
+          .where('user_id', user.id)
+          .whereIn('choice_id', choiceIds)
+      : []
+
+    const votedChoiceIds = new Set(
+      userVotes.map((vote) => Number(vote.choice_id))
+    )
+
+    // Envoyer les données à la page React
     return inertia.render('rooms/show', {
       room: {
         id: room.id,
         name: room.name,
         code: room.code,
       },
+
       polls: polls.map((poll) => ({
-        id: poll.id,
-        question: poll.question,
-        type: poll.type,
-        choices: poll.choices.map((choice) => ({
-          id: choice.id,
-          proposition: choice.proposition,
-          startsAt: choice.startsAt,
-          votesCount: countsByChoice.get(choice.id) ?? 0,
+      id: poll.id,
+      question: poll.question,
+
+      choices: poll.choices.map((choice) => ({
+        id: choice.id,
+        proposition: choice.proposition,
+        votesCount: countsByChoice.get(Number(choice.id)) ?? 0,
+        hasVoted: votedChoiceIds.has(Number(choice.id)),
         })),
       })),
     })
