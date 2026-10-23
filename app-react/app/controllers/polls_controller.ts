@@ -6,15 +6,16 @@ import Vote from '#models/vote'
 import db from '@adonisjs/lucid/services/db'
 
 export default class PollsController {
-  /**
-   * Créer un sondage avec ses propositions
-   */
+  
+
+    // Créer un sondage avec ses propositions
+  
   async store({ request, response, auth, params }: HttpContext) {
     const question = request.input('question')
     const roomId = Number(params.roomId ?? request.input('room_id'))
     const choices: unknown = request.input('choices')
 
-    // Vérifier les informations reçues
+            // Vérifier les informations reçues
     if (
       typeof question !== 'string' ||
       !question.trim() ||
@@ -34,7 +35,7 @@ export default class PollsController {
 
     const user = auth.user!
 
-    // Vérifier que l'utilisateur appartient à la salle
+            // Vérifier que l'utilisateur appartient à la salle
     const membership = await db
       .from('room_users')
       .where('room_id', roomId)
@@ -47,7 +48,7 @@ export default class PollsController {
       )
     }
 
-    // Créer le sondage et ses propositions dans une transaction
+            // Créer le sondage et ses propositions dans une transaction
     await db.transaction(async (trx) => {
       const poll = await Poll.create(
         {
@@ -70,7 +71,7 @@ export default class PollsController {
       }
     })
 
-    // Revenir à la salle pour voir le sondage créé
+            // Revenir à la salle pour voir le sondage créé
     return response.redirect().toRoute('rooms.show', {
       id: roomId,
     })
@@ -78,9 +79,8 @@ export default class PollsController {
 
 
 
-  /**
-   * Voter pour une proposition
-   */
+  // Voter pour une proposition
+   
   async vote({ params, request, auth, response }: HttpContext) {
     const poll = await Poll.find(params.id)
 
