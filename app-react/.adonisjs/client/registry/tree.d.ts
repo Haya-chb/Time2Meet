@@ -23,4 +23,9 @@ export interface ApiDefinition {
     update: typeof routes['rooms.update']
     destroy: typeof routes['rooms.destroy']
   }
+  polls: {
+    store: typeof routes['polls.store']
+    show: typeof routes['polls.show']
+    vote: typeof routes['polls.vote']
+  }
 }

@@ -202,4 +202,43 @@ export interface Registry {
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/rooms_controller').default['destroy']>>>
     }
   }
+  'polls.store': {
+    methods: ["POST"]
+    pattern: '/rooms/:roomId/polls'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { roomId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['store']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['store']>>>
+    }
+  }
+  'polls.show': {
+    methods: ["GET","HEAD"]
+    pattern: '/polls/:id'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['show']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['show']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['show']>>>
+    }
+  }
+  'polls.vote': {
+    methods: ["POST"]
+    pattern: '/polls/:id/vote'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['vote']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['vote']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/polls_controller').default['vote']>>>
+    }
+  }
 }

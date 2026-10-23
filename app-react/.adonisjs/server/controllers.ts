@@ -5,6 +5,7 @@
 
 export const controllers = {
   NewAccount: () => import('#controllers/new_account_controller'),
+  Polls: () => import('#controllers/polls_controller'),
   Rooms: () => import('#controllers/rooms_controller'),
   Session: () => import('#controllers/session_controller'),
 }

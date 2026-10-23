@@ -19,6 +19,9 @@ export type ScannedRoutes = {
     'rooms.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'rooms.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'rooms.destroy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'polls.store': { paramsTuple: [ParamValue]; params: {'roomId': ParamValue} }
+    'polls.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'polls.vote': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
     'home': { paramsTuple?: []; params?: {} }
@@ -29,6 +32,7 @@ export type ScannedRoutes = {
     'rooms.create': { paramsTuple?: []; params?: {} }
     'rooms.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'rooms.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'polls.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
     'home': { paramsTuple?: []; params?: {} }
@@ -39,6 +43,7 @@ export type ScannedRoutes = {
     'rooms.create': { paramsTuple?: []; params?: {} }
     'rooms.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'rooms.edit': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'polls.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   POST: {
     'new_account.store': { paramsTuple?: []; params?: {} }
@@ -46,6 +51,8 @@ export type ScannedRoutes = {
     'session.destroy': { paramsTuple?: []; params?: {} }
     'rooms.join': { paramsTuple?: []; params?: {} }
     'rooms.store': { paramsTuple?: []; params?: {} }
+    'polls.store': { paramsTuple: [ParamValue]; params: {'roomId': ParamValue} }
+    'polls.vote': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PUT: {
     'rooms.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

@@ -7,6 +7,40 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class ChoiceSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'pollId', 'proposition', 'startsAt', 'updatedAt'] as const
+  $columns = ChoiceSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare pollId: number
+  @column()
+  declare proposition: string
+  @column.dateTime()
+  declare startsAt: DateTime | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class PollSchema extends BaseModel {
+  static $columns = ['createdAt', 'id', 'question', 'roomId', 'type', 'updatedAt'] as const
+  $columns = PollSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare question: string
+  @column()
+  declare roomId: number
+  @column()
+  declare type: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class RoomUserSchema extends BaseModel {
   static $columns = ['createdAt', 'roomId', 'updatedAt', 'userId'] as const
   $columns = RoomUserSchema.$columns
@@ -50,4 +84,19 @@ export class UserSchema extends BaseModel {
   declare password: string
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
+}
+
+export class VoteSchema extends BaseModel {
+  static $columns = ['choiceId', 'createdAt', 'id', 'updatedAt', 'userId'] as const
+  $columns = VoteSchema.$columns
+  @column()
+  declare choiceId: number
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
 }

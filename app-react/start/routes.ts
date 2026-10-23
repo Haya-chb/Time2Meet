@@ -30,6 +30,20 @@ router
 
   router.post('rooms/join', [controllers.Rooms, 'join']).as('rooms.join')
   router.resource('rooms', controllers.Rooms)
+
+router
+  .post('rooms/:roomId/polls', [controllers.Polls, 'store'])
+  .as('polls.store')
+
+router
+  .get('polls/:id', [controllers.Polls, 'show'])
+  .as('polls.show')
+
+router
+  .post('polls/:id/vote', [controllers.Polls, 'vote'])
+  .as('polls.vote')
+
+
   })
   .use(middleware.auth())
 
