@@ -48,6 +48,12 @@ const routes = {
     tokens: [[0,"logout"]],
     types: placeholder as Registry['session.destroy']['types'],
   },
+  'rooms.join': {
+    methods: ["POST"],
+    pattern: '/rooms/join',
+    tokens: [[0,"rooms"],[0,"join"]],
+    types: placeholder as Registry['rooms.join']['types'],
+  },
   'rooms.index': {
     methods: ["GET","HEAD"],
     pattern: '/rooms',

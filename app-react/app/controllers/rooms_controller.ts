@@ -1,104 +1,153 @@
-
+import db from '@adonisjs/lucid/services/db'
 import type { HttpContext } from '@adonisjs/core/http'
 import Room from '#models/room'
 
 export default class RoomsController {
   /**
-   * Afficher la liste des groupes
+   * Afficher les rooms
    */
-  async index({ response }: HttpContext) {
-    const rooms = await Room.all()
+async index({ auth, inertia }: HttpContext) {
+    const user = auth.user!
 
-    return response.ok(rooms)
+    const rooms = await Room.query()
+      .join('room_users', 'rooms.id', 'room_users.room_id')
+      .where('room_users.user_id', user.id)
+      .select('rooms.*')
+
+    return inertia.render('rooms/index', {
+      rooms: rooms.map((room) => ({
+        id: room.id,
+        name: room.name,
+        code: room.code,
+      })),
+    })
   }
 
   /**
    * Afficher le formulaire de création
-   * Pas nécessaire pour l'instant avec React
    */
-  async create({}: HttpContext) {
-    return { message: 'Utilise le formulaire React pour créer un groupe' }
+  async create({ inertia }: HttpContext) {
+    return inertia.render('rooms/create')
   }
 
   /**
-   * Créer un nouveau groupe
+   * Afficher le Dashboard avec les salles de l'utilisateur
    */
-  async store({ request, response }: HttpContext) {
+  async dashboard({ auth, inertia }: HttpContext) {
+    const user = auth.user!
+
+    const rooms = await Room.query()
+      .join('room_users', 'rooms.id', 'room_users.room_id')
+      .where('room_users.user_id', user.id)
+      .select('rooms.*')
+
+    return inertia.render('dashboard', {
+      rooms: rooms.map((room) => ({
+        id: room.id,
+        name: room.name,
+        code: room.code,
+      })),
+    })
+  }
+
+
+
+
+
+  
+  /**
+   * Créer une room et y inscrire son créateur
+   */
+  async store({ request, response, auth }: HttpContext) {
     const name = request.input('name')
 
     if (typeof name !== 'string' || !name.trim()) {
       return response.badRequest({
-        message: 'Le nom du groupe est obligatoire',
+        message: 'Le nom de la room est obligatoire',
       })
     }
 
     const code = crypto.randomUUID().replace(/-/g, '').slice(0, 8).toUpperCase()
 
+    // Créer la salle
     const room = await Room.create({
       name: name.trim(),
       code,
     })
 
-    return response.created(room)
+    // Inscrire le créateur comme membre de cette salle
+    const user = auth.user!
+
+    await db.table('room_users').insert({
+      room_id: room.id,
+      user_id: user.id,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+
+    // Rediriger vers la salle créée
+    return response.redirect().toRoute('rooms.show', { id: room.id })
   }
 
   /**
-   * Afficher un groupe précis
+   * Afficher une room
    */
-  async show({ params, response }: HttpContext) {
+  async show({ params, inertia, response }: HttpContext) {
     const room = await Room.find(params.id)
 
     if (!room) {
-      return response.notFound({ message: 'Groupe introuvable' })
+      return response.notFound('Room introuvable')
     }
 
-    return response.ok(room)
+    return inertia.render('rooms/show', {
+      room: {
+        id: room.id,
+        name: room.name,
+        code: room.code,
+      },
+    })
   }
 
-  /**
-   * Afficher le formulaire de modification
-   * Pas nécessaire pour l'instant avec React
-   */
-  async edit({ params }: HttpContext) {
-    return { message: `Formulaire de modification du groupe ${params.id} à créer` }
+
+  async join({ request, auth, response, session }: HttpContext) {
+  const code = request.input('code')
+
+  if (typeof code !== 'string' || !code.trim()) {
+    session.flash('errors', {
+      code: 'Saisis le code de la salle.',
+    })
+    return response.redirect().back()
   }
 
-  /**
-   * Modifier un groupe
-   */
-  async update({ params, request, response }: HttpContext) {
-    const room = await Room.find(params.id)
+  const room = await Room.findBy('code', code.trim().toUpperCase())
 
-    if (!room) {
-      return response.notFound({ message: 'Groupe introuvable' })
-    }
-
-    const name = request.input('name')
-
-    if (typeof name !== 'string' || !name.trim()) {
-      return response.badRequest({
-        message: 'Le nom du groupe est obligatoire',
-      })
-    }
-
-    room.name = name.trim()
-    await room.save()
-
-    return response.ok(room)
+  if (!room) {
+    session.flash('errors', {
+      code: 'Aucune salle ne correspond à ce code.',
+    })
+    return response.redirect().back()
   }
 
-  /**
-   * Supprimer un groupe
-   */
-  async destroy({ params, response }: HttpContext) {
-    const room = await Room.find(params.id)
+  const user = auth.user!
 
-    if (!room) {
-      return response.notFound({ message: 'Groupe introuvable' })
-    }
+  const alreadyJoined = await db
+    .from('room_users')
+    .where('room_id', room.id)
+    .where('user_id', user.id)
+    .first()
 
-    await room.delete()
-
-    return response.ok({ message: 'Groupe supprimé avec succès' })
+  if (!alreadyJoined) {
+    await db.table('room_users').insert({
+      room_id: room.id,
+      user_id: user.id,
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
   }
+
+  return response.redirect().toRoute('rooms.show', { id: room.id })
+}
+
+
+
 }

@@ -25,10 +25,13 @@ router
 
 router
   .group(() => {
-    router.on('/dashboard').renderInertia('dashboard', {}).as('dashboard')
+   router.get('/dashboard', [controllers.Rooms, 'dashboard']).as('dashboard')
     router.post('logout', [controllers.Session, 'destroy'])
+
+  router.post('rooms/join', [controllers.Rooms, 'join']).as('rooms.join')
+  router.resource('rooms', controllers.Rooms)
   })
   .use(middleware.auth())
 
 
-router.resource('rooms', controllers.Rooms)
+

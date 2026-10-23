@@ -14,6 +14,7 @@ export interface ApiDefinition {
   }
   dashboard: typeof routes['dashboard']
   rooms: {
+    join: typeof routes['rooms.join']
     index: typeof routes['rooms.index']
     create: typeof routes['rooms.create']
     store: typeof routes['rooms.store']

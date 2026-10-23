@@ -10,7 +10,11 @@ import NavLink, { type NavItem } from '~/components/nav_link'
  * Top-level app navigation. Add an entry here for every new area of your
  * app, and it shows up in the navigation bar with its active state handled.
  */
-const nav: NavItem[] = [{ label: 'Dashboard', route: 'dashboard', icon: House }]
+const nav: NavItem[] = [
+  { label: 'Dashboard', route: 'dashboard', icon: House },
+  { label: 'Créer une room', route: 'rooms.create' },
+ 
+]
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   return (

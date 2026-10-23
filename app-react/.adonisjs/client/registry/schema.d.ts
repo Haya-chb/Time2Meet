@@ -80,9 +80,9 @@ export interface Registry {
       paramsTuple: []
       params: {}
       query: {}
-      response: unknown
-      errorResponse: unknown
-      rawResponse: ExtractRawResponse<unknown>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/rooms_controller').default['dashboard']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/rooms_controller').default['dashboard']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/rooms_controller').default['dashboard']>>>
     }
   }
   'session.destroy': {
@@ -96,6 +96,19 @@ export interface Registry {
       response: ExtractResponse<Awaited<ReturnType<import('#controllers/session_controller').default['destroy']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/session_controller').default['destroy']>>>
       rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/session_controller').default['destroy']>>>
+    }
+  }
+  'rooms.join': {
+    methods: ["POST"]
+    pattern: '/rooms/join'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/rooms_controller').default['join']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/rooms_controller').default['join']>>>
+      rawResponse: ExtractRawResponse<Awaited<ReturnType<import('#controllers/rooms_controller').default['join']>>>
     }
   }
   'rooms.index': {

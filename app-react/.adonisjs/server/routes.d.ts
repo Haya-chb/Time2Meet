@@ -11,6 +11,7 @@ export type ScannedRoutes = {
     'session.store': { paramsTuple?: []; params?: {} }
     'dashboard': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'rooms.join': { paramsTuple?: []; params?: {} }
     'rooms.index': { paramsTuple?: []; params?: {} }
     'rooms.create': { paramsTuple?: []; params?: {} }
     'rooms.store': { paramsTuple?: []; params?: {} }
@@ -43,6 +44,7 @@ export type ScannedRoutes = {
     'new_account.store': { paramsTuple?: []; params?: {} }
     'session.store': { paramsTuple?: []; params?: {} }
     'session.destroy': { paramsTuple?: []; params?: {} }
+    'rooms.join': { paramsTuple?: []; params?: {} }
     'rooms.store': { paramsTuple?: []; params?: {} }
   }
   PUT: {
